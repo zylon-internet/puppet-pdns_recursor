@@ -1,0 +1,3 @@
+[submodule "files/munin-pdns_recursor"]
+	path = files/munin-pdns_recursor
+	url = https://github.com/linsomniac/munin-pdns_recursor.git
