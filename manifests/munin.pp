@@ -29,7 +29,7 @@ class pdns_recursor::munin {
     $completename = "pdns_rec_$name"
     munin::plugin {
       $completename:
-        source => "pdns_recursor/munin-pdns_recursor/pdns_rec_$completename";
+        source => "pdns_recursor/munin-pdns_recursor/$completename";
     }
   }
 }
