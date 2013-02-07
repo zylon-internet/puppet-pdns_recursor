@@ -26,9 +26,10 @@ class pdns_recursor::munin {
   }
 
   define munplug () {
+    $completename = "pdns_rec_$name"
     munin::plugin {
-      $name:
-        source => "pdns_recursor/munin-pdns_recursor/pdns_rec_$name";
+      $completename:
+        source => "pdns_recursor/munin-pdns_recursor/pdns_rec_$completename";
     }
   }
 }
