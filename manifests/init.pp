@@ -13,7 +13,7 @@
 #   Can be defined also by the (top scope) variable $pdns_recursor_manage_munin
 #
 # [*manage_repo*]
-#   If set to true (default false), a third-party yum/apt repository containing 
+#   If set to true (default false), a third-party yum/apt repository containing
 #   the latest upstream-released versions.
 #   Can be defined also by the (top scope) variable $pdns_recursor_manage_repo
 #
@@ -137,7 +137,7 @@
 # [*noops*]
 #   Set noop metaparameter to true for all the resources managed by the module.
 #   Basically you can run a dryrun for this specific module if you set
-#   this to true. Default: false
+#   this to true. Default: undef
 #
 # Default class params - As defined in pdns_recursor::params.
 # Note that these variables are mostly defined and used in the module itself,
@@ -277,7 +277,6 @@ class pdns_recursor (
   $bool_firewall=any2bool($firewall)
   $bool_debug=any2bool($debug)
   $bool_audit_only=any2bool($audit_only)
-  $bool_noops=any2bool($noops)
 
   $local_address = [ '127.0.0.1', $firewall_dst ]
 
@@ -363,7 +362,7 @@ class pdns_recursor (
   ### Managed resources
   package { $pdns_recursor::package:
     ensure  => $pdns_recursor::manage_package,
-    noop    => $pdns_recursor::bool_noops,
+    noop    => $pdns_recursor::noops,
   }
 
   service { 'pdns_recursor':
@@ -373,7 +372,7 @@ class pdns_recursor (
     hasstatus  => $pdns_recursor::service_status,
     pattern    => $pdns_recursor::process,
     require    => Package[$pdns_recursor::package],
-    noop       => $pdns_recursor::bool_noops,
+    noop       => $pdns_recursor::noops,
   }
 
   file { 'pdns_recursor.conf':
@@ -388,7 +387,7 @@ class pdns_recursor (
     content => $pdns_recursor::manage_file_content,
     replace => $pdns_recursor::manage_file_replace,
     audit   => $pdns_recursor::manage_audit,
-    noop    => $pdns_recursor::bool_noops,
+    noop    => $pdns_recursor::noops,
   }
 
   # The whole pdns_recursor configuration directory can be recursively overriden
@@ -404,7 +403,7 @@ class pdns_recursor (
       force   => $pdns_recursor::bool_source_dir_purge,
       replace => $pdns_recursor::manage_file_replace,
       audit   => $pdns_recursor::manage_audit,
-      noop    => $pdns_recursor::bool_noops,
+      noop    => $pdns_recursor::noops,
     }
   }
 
@@ -422,7 +421,7 @@ class pdns_recursor (
       ensure    => $pdns_recursor::manage_file,
       variables => $classvars,
       helper    => $pdns_recursor::puppi_helper,
-      noop      => $pdns_recursor::bool_noops,
+      noop      => $pdns_recursor::noops,
     }
   }
 
@@ -436,7 +435,7 @@ class pdns_recursor (
         target   => $pdns_recursor::monitor_target,
         tool     => $pdns_recursor::monitor_tool,
         enable   => $pdns_recursor::manage_monitor,
-        noop     => $pdns_recursor::bool_noops,
+        noop     => $pdns_recursor::noops,
       }
     }
     if $pdns_recursor::service != '' {
@@ -448,7 +447,7 @@ class pdns_recursor (
         argument => $pdns_recursor::process_args,
         tool     => $pdns_recursor::monitor_tool,
         enable   => $pdns_recursor::manage_monitor,
-        noop     => $pdns_recursor::bool_noops,
+        noop     => $pdns_recursor::noops,
       }
     }
   }
@@ -465,7 +464,7 @@ class pdns_recursor (
       direction   => 'input',
       tool        => $pdns_recursor::firewall_tool,
       enable      => $pdns_recursor::manage_firewall,
-      noop        => $pdns_recursor::bool_noops,
+      noop        => $pdns_recursor::noops,
     }
   }
 
@@ -479,7 +478,7 @@ class pdns_recursor (
       owner   => 'root',
       group   => 'root',
       content => inline_template('<%= scope.to_hash.reject { |k,v| k.to_s =~ /(uptime.*|path|timestamp|free|.*password.*|.*psk.*|.*key)/ }.to_yaml %>'),
-      noop    => $pdns_recursor::bool_noops,
+      noop    => $pdns_recursor::noops,
     }
   }
 
